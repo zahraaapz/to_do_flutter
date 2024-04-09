@@ -17,7 +17,7 @@ class ToDoModelAdapter extends TypeAdapter<ToDoModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ToDoModel(
-      id: fields[0] as int,
+  
       des: fields[2] as String,
       title: fields[1] as String,
       color: fields[3] as ToDoColor,

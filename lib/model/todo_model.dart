@@ -6,40 +6,32 @@ class ToDoModel extends HiveObject {
   @HiveField(0)
   int id = -1;
   @HiveField(1)
-String title;
+  String title;
   @HiveField(2)
-String des;
+  String des;
 
   @HiveField(3)
-ToDoColor color;
+  ToDoColor color;
 
-
-ToDoModel({
-  required this.id,
-  required this.des,
-  required this.title,
-  required this.color,
-});
+  ToDoModel({
+    required this.des,
+    required this.title,
+    required this.color,
+  });
 }
 
-
 @HiveType(typeId: 1)
-enum  ToDoColor{
-
-
+enum ToDoColor {
   @HiveField(0)
-blue(11111),
+  blue(0xffbbdefb),
   @HiveField(1)
-pink(22222),
+  pink(0xfff48fb1),
   @HiveField(2)
-green(1),
+  green(0xff1de9b6),
   @HiveField(3)
-purple(1);
+  purple(0xff7e57c2);
 
-final int code;
+  final int code;
 
   const ToDoColor(this.code);
-
-
-  
 }
