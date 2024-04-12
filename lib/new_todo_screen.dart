@@ -28,13 +28,13 @@ class ToDoFormScreen extends StatelessWidget {
           child: Column(
             children: [
               const ToDoColorSelector(),
-              SizedBox(height: 12,),
+              const SizedBox(height: 12,),
               TextField(
                 controller: titleController,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(hintText: 'Title'),
               ),
-              SizedBox(height: 12,),
+              const SizedBox(height: 12,),
 
               TextField(
                 controller: desController,
@@ -48,9 +48,11 @@ class ToDoFormScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (titleController.text.isEmpty) {
-              
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: Colors.black,
+            content: Text('Field is empty')));
             } else {
-                 toDoModel.title=titleController.text.trim();
+            toDoModel.title=titleController.text.trim();
             toDoModel.des=desController.text.trim();
             toDoModel.color=_selectColor;
 
