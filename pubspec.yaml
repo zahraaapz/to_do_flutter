@@ -39,6 +39,8 @@ dependencies:
   hive_flutter: ^1.1.0
   path_provider: ^2.1.2
   hive_generator: ^2.0.1
+  flutter_local_notifications: ^17.1.1
+  timezone: ^0.9.3
 
 dev_dependencies:
   flutter_test:
