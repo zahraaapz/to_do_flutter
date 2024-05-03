@@ -129,7 +129,9 @@ class Item extends StatelessWidget {
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
                             color: Color(toDo.color.code)),
-                      )
+                      ),
+                       Spacer(),
+                      Text('5/3/2024   12:30')
                     ],
                   ),
                   Padding(

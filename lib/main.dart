@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:to_do_list/helper.dart';
 import 'package:to_do_list/main_screen.dart';
 import 'package:to_do_list/model/todo_model.dart';
 
@@ -14,6 +15,7 @@ Future<void> main() async {
   Hive.registerAdapter(ToDoModelAdapter());
 
   await Hive.openBox<ToDoModel>(todoBox);
+  await NotifHelper().init();
   runApp(const MyApp());
 
 }

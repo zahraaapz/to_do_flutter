@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_list/helper.dart';
 import 'package:to_do_list/main_screen.dart';
 import 'package:to_do_list/model/todo_model.dart';
 
 late ToDoColor _selectColor;
 
-class ToDoFormScreen extends StatelessWidget {
+class ToDoFormScreen extends StatefulWidget {
   const ToDoFormScreen({super.key, required this.toDoModel});
 
   final ToDoModel toDoModel;
+
+  @override
+  State<ToDoFormScreen> createState() => _ToDoFormScreenState();
+}
+
+class _ToDoFormScreenState extends State<ToDoFormScreen> {
+
   @override
   Widget build(BuildContext context) {
-    final titleController = TextEditingController(text: toDoModel.title);
-    final desController = TextEditingController(text: toDoModel.des);
-    _selectColor = toDoModel.color;
+    final titleController = TextEditingController(text: widget.toDoModel.title);
+    final desController = TextEditingController(text: widget.toDoModel.des);
+    _selectColor = widget.toDoModel.color;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -28,19 +36,49 @@ class ToDoFormScreen extends StatelessWidget {
           child: Column(
             children: [
               const ToDoColorSelector(),
-              const SizedBox(height: 12,),
+              const SizedBox(
+                height: 12,
+              ),
               TextField(
                 controller: titleController,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(hintText: 'Title'),
               ),
-              const SizedBox(height: 12,),
-
+              const SizedBox(
+                height: 12,
+              ),
               TextField(
                 controller: desController,
                 textInputAction: TextInputAction.newline,
                 maxLines: 8,
                 decoration: const InputDecoration(hintText: 'Description'),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+
+                  const Text('Select date & time'),
+                  IconButton(
+                      onPressed: () async {
+                        await showDatePicker(
+                                context: context,
+                                firstDate: DateTime.now().toLocal(),
+                                initialDate:DateTime.now().toLocal() ,
+                                lastDate: DateTime.now().add(const Duration(days: 1000)))
+                            .then((value) {
+                          showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(value!),
+                          ).then((val) {
+                            NotifHelper().setNotification(
+                                value, widget.toDoModel.id, val!.hour, val.minute);
+                            print(value.toString());
+                            print(val.toString());
+                          });
+                        });
+                      },
+                      icon: const Icon(Icons.calendar_today)),
+                ],
               )
             ],
           ),
@@ -48,21 +86,21 @@ class ToDoFormScreen extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             if (titleController.text.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            backgroundColor: Colors.black,
-            content: Text('Field is empty')));
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.black,
+                  content: Text('Field is empty')));
             } else {
-            toDoModel.title=titleController.text.trim();
-            toDoModel.des=desController.text.trim();
-            toDoModel.color=_selectColor;
+              widget.toDoModel.title = titleController.text.trim();
+              widget.toDoModel.des = desController.text.trim();
+              widget.toDoModel.color = _selectColor;
 
-            if (toDoModel.isInBox) {
-              toDoModel.save();
-            } else {
-              box.add(toDoModel);
+              if (widget.toDoModel.isInBox) {
+                widget.toDoModel.save();
+              } else {
+                box.add(widget.toDoModel);
+              }
             }
-            }
-         Navigator.pop(context);
+            Navigator.pop(context);
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
@@ -149,7 +187,12 @@ class ColorItem extends StatelessWidget {
         alignment: Alignment.center,
         decoration:
             BoxDecoration(shape: BoxShape.circle, color: Color(colorCode)),
-        child: isSelect ? const Icon(Icons.check,color: Colors.white,) : null,
+        child: isSelect
+            ? const Icon(
+                Icons.check,
+                color: Colors.white,
+              )
+            : null,
       ),
     );
   }
