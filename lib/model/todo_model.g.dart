@@ -17,17 +17,17 @@ class ToDoModelAdapter extends TypeAdapter<ToDoModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ToDoModel(
-  
       des: fields[2] as String,
+      dateTime: fields[4] as DateTime,
       title: fields[1] as String,
       color: fields[3] as ToDoColor,
-    );
+    )..id = fields[0] as int;
   }
 
   @override
   void write(BinaryWriter writer, ToDoModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +35,9 @@ class ToDoModelAdapter extends TypeAdapter<ToDoModel> {
       ..writeByte(2)
       ..write(obj.des)
       ..writeByte(3)
-      ..write(obj.color);
+      ..write(obj.color)
+      ..writeByte(4)
+      ..write(obj.dateTime);
   }
 
   @override

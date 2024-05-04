@@ -11,10 +11,13 @@ class ToDoModel extends HiveObject {
   String des;
 
   @HiveField(3)
-  ToDoColor color;
+  ToDoColor color; 
+   @HiveField(4)
+  DateTime dateTime=DateTime.now();
 
   ToDoModel({
     required this.des,
+    required this.dateTime,
     required this.title,
     required this.color,
   });

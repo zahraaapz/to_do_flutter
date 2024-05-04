@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:to_do_list/helper.dart';
+import 'package:to_do_list/service/service.dart';
 import 'package:to_do_list/main_screen.dart';
 import 'package:to_do_list/model/todo_model.dart';
+import 'package:to_do_list/widget/pick_date_time.dart';
 
 late ToDoColor _selectColor;
 
@@ -15,6 +16,7 @@ class ToDoFormScreen extends StatefulWidget {
 }
 
 class _ToDoFormScreenState extends State<ToDoFormScreen> {
+  var dateTime;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,7 @@ class _ToDoFormScreenState extends State<ToDoFormScreen> {
     _selectColor = widget.toDoModel.color;
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Todo Form'),
           leading: IconButton(
@@ -56,26 +59,10 @@ class _ToDoFormScreenState extends State<ToDoFormScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
-                  const Text('Select date & time'),
+                  const Text('Select date & time' ,style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
                   IconButton(
                       onPressed: () async {
-                        await showDatePicker(
-                                context: context,
-                                firstDate: DateTime.now().toLocal(),
-                                initialDate:DateTime.now().toLocal() ,
-                                lastDate: DateTime.now().add(const Duration(days: 1000)))
-                            .then((value) {
-                          showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.fromDateTime(value!),
-                          ).then((val) {
-                            NotifHelper().setNotification(
-                                value, widget.toDoModel.id, val!.hour, val.minute);
-                            print(value.toString());
-                            print(val.toString());
-                          });
-                        });
+                        dateTime = await showDateTimePicker(context);
                       },
                       icon: const Icon(Icons.calendar_today)),
                 ],
@@ -84,7 +71,7 @@ class _ToDoFormScreenState extends State<ToDoFormScreen> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             if (titleController.text.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   backgroundColor: Colors.black,
@@ -93,17 +80,34 @@ class _ToDoFormScreenState extends State<ToDoFormScreen> {
               widget.toDoModel.title = titleController.text.trim();
               widget.toDoModel.des = desController.text.trim();
               widget.toDoModel.color = _selectColor;
-
+              widget.toDoModel.dateTime=dateTime;
+        
               if (widget.toDoModel.isInBox) {
+                await NotifHelper().cancelNotif(widget.toDoModel.id);
+        
                 widget.toDoModel.save();
+                if (dateTime != null) {
+                  NotifHelper().setNotification(
+                      dateTime,
+                      widget.toDoModel.id,
+                      widget.toDoModel.title,
+                      widget.toDoModel.des);
+                }
               } else {
                 box.add(widget.toDoModel);
+                if (dateTime != null) {
+                  NotifHelper().setNotification(
+                      dateTime,
+                      widget.toDoModel.id,
+                      widget.toDoModel.title,
+                      widget.toDoModel.des);
+                }
               }
             }
             Navigator.pop(context);
           },
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50)),
           child: const Icon(Icons.save),
         ),
       ),

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/new_todo_screen.dart';
+
+import 'service/service.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -29,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
                           MaterialPageRoute(
                             builder: (context) => ToDoFormScreen(
                                 toDoModel: ToDoModel(
-                                    des: '', title: '', color: ToDoColor.blue)),
+                                   dateTime:DateTime.now(), des: '', title: '', color: ToDoColor.blue)),
                           ));
                     },
                     icon: const Icon(Icons.add_circle_rounded))
@@ -104,9 +108,13 @@ class Item extends StatelessWidget {
               child: const Icon(Icons.delete),
             ),
             dismissThresholds: const {DismissDirection.endToStart: 0.3},
-            onDismissed: (direction) {
+            onDismissed: (direction) async {
               if (direction == DismissDirection.endToStart) {
-                box.delete(toDo.id);
+              await NotifHelper().cancelNotif(toDo.id);
+               box.delete(toDo.id);
+                
+
+              
               }
             },
             key: ValueKey<int>(toDo.id),
@@ -118,6 +126,7 @@ class Item extends StatelessWidget {
                 children: [
                   Row(
                     children: [
+                   
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: Icon(Icons.edit_note,
@@ -130,8 +139,12 @@ class Item extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: Color(toDo.color.code)),
                       ),
-                       Spacer(),
-                      Text('5/3/2024   12:30')
+                       const Spacer(),
+                      Builder(
+                        builder:(context) {
+                          final dateString=DateFormat('dd/mm/yyyy   hh:mm').format(toDo.dateTime);
+                          return Text(dateString);
+                        },)
                     ],
                   ),
                   Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class NotifHelper {
   final flutterLocalNotifPlugin = FlutterLocalNotificationsPlugin();
@@ -9,23 +10,24 @@ class NotifHelper {
 
   init() async {
     await flutterLocalNotifPlugin.initialize(_initializationSetting);
-    tz.initializeDatabase([]);
+    tz.initializeTimeZones();
   }
 
-  static final _androidNotificationDetails = AndroidNotificationDetails(
+  static final _androidNotificationDetails = const AndroidNotificationDetails(
       'channelId', 'channelName',
       importance: Importance.max, priority: Priority.high);
 
   static final NotificationDetails _notificationDetails =
       NotificationDetails(android: _androidNotificationDetails);
 
-  setNotification(DateTime dateTime, int id ,int hour,int min) async {
+  setNotification(DateTime dateTime, int id ,title,body) async {
     await flutterLocalNotifPlugin.zonedSchedule(
         id,
-        'title',
-        'body',
-        tz.TZDateTime(tz.local, dateTime.year, dateTime.month, dateTime.day,
-            hour, min),
+        title,
+        body,
+        tz.TZDateTime.from(
+          dateTime,
+          tz.local),
         _notificationDetails,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
@@ -36,3 +38,11 @@ class NotifHelper {
     await flutterLocalNotifPlugin.cancel(id);
   }
 }
+
+
+
+
+
+
+
+
