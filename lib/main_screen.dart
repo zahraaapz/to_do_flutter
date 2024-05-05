@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:to_do_list/main.dart';
 import 'package:to_do_list/model/todo_model.dart';
 import 'package:to_do_list/new_todo_screen.dart';
-
 import 'service/service.dart';
 
 class MainScreen extends StatefulWidget {
@@ -98,12 +97,14 @@ class Item extends StatelessWidget {
             content: Text(toDo.des)));
       },
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
+        height: 70,
+        margin: const EdgeInsets.only(bottom:5),
         child: Dismissible(
             confirmDismiss: (direction) async =>
                 direction == DismissDirection.endToStart,
             background: Container(
-              padding: const EdgeInsets.all(12),
+              height: 70,
+              margin: const EdgeInsets.all(10),
               color: Colors.red,
               child: const Icon(Icons.delete),
             ),
@@ -119,7 +120,7 @@ class Item extends StatelessWidget {
             },
             key: ValueKey<int>(toDo.id),
             child: Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(5),
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,10 +140,10 @@ class Item extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: Color(toDo.color.code)),
                       ),
-                       const Spacer(),
+                      const Spacer(),
                       Builder(
                         builder:(context) {
-                          final dateString=DateFormat('dd/mm/yyyy   hh:mm').format(toDo.dateTime);
+                          final dateString=DateFormat('dd/mm/yyyy   hh:mm a' ).format(toDo.dateTime);
                           return Text(dateString);
                         },)
                     ],
@@ -155,9 +156,6 @@ class Item extends StatelessWidget {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 8,
                   ),
                   const Divider()
                 ],

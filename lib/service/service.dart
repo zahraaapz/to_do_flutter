@@ -13,13 +13,18 @@ class NotifHelper {
     tz.initializeTimeZones();
   }
 
-  static final _androidNotificationDetails = const AndroidNotificationDetails(
-      'channelId', 'channelName',
-      importance: Importance.max, priority: Priority.high);
+  static const  _androidNotificationDetails =  AndroidNotificationDetails(
+      'channelId', 
+      'channelName',
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('sound'),
+      importance: Importance.max,
+      priority: Priority.high
+      );
 
   static final NotificationDetails _notificationDetails =
       NotificationDetails(android: _androidNotificationDetails);
-
+    
   setNotification(DateTime dateTime, int id ,title,body) async {
     await flutterLocalNotifPlugin.zonedSchedule(
         id,
@@ -29,7 +34,8 @@ class NotifHelper {
           dateTime,
           tz.local),
         _notificationDetails,
-        androidAllowWhileIdle: true,
+        payload: '1',
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime);
   }

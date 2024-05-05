@@ -80,7 +80,7 @@ class _ToDoFormScreenState extends State<ToDoFormScreen> {
               widget.toDoModel.title = titleController.text.trim();
               widget.toDoModel.des = desController.text.trim();
               widget.toDoModel.color = _selectColor;
-              widget.toDoModel.dateTime=dateTime;
+              widget.toDoModel.dateTime=dateTime??DateTime.now();
         
               if (widget.toDoModel.isInBox) {
                 await NotifHelper().cancelNotif(widget.toDoModel.id);
